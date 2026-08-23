@@ -1,0 +1,40 @@
+name: Daily Torvik scrape
+
+on:
+  schedule:
+    # 11:00 UTC = 6am EST / 7am EDT. GitHub cron is fixed UTC (no DST
+    # adjustment) — a personal daily pull doesn't need to be more precise
+    # than "roughly 6-7am ET" during the season.
+    - cron: "0 11 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  scrape-and-upsert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install scraper dependencies
+        working-directory: scraper
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Run scraper (all P4 teams + players)
+        working-directory: scraper
+        run: python scrape_all_p4.py
+
+      - name: Install DB dependencies
+        working-directory: db
+        run: pip install -r requirements.txt
+
+      - name: Upsert into Supabase
+        working-directory: db
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python upsert.py

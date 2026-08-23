@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Secrets
+.env
+*.env
+!*.env.example
+
+# Scraper output (regenerated daily by CI, DB is source of truth)
+scraper/output/
+
+# OS
+.DS_Store

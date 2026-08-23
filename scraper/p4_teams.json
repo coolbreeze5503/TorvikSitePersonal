@@ -1,0 +1,274 @@
+[
+  {
+    "team_name": "Alabama",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Arizona",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Arizona St.",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Arkansas",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Auburn",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "BYU",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Baylor",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Boston College",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "California",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Cincinnati",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Clemson",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Colorado",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Duke",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Florida",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Florida St.",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Georgia",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Georgia Tech",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Houston",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Illinois",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Indiana",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Iowa",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Iowa St.",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Kansas",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Kansas St.",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Kentucky",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "LSU",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Louisville",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Maryland",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Miami FL",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Michigan",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Michigan St.",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Minnesota",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Mississippi",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Mississippi St.",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Missouri",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "N.C. State",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Nebraska",
+    "conference": "B10"
+  },
+  {
+    "team_name": "North Carolina",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Northwestern",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Notre Dame",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Ohio St.",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Oklahoma",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Oklahoma St.",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Oregon",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Penn St.",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Pittsburgh",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Purdue",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Rutgers",
+    "conference": "B10"
+  },
+  {
+    "team_name": "SMU",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "South Carolina",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Stanford",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Syracuse",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "TCU",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Tennessee",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Texas",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Texas A&M",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Texas Tech",
+    "conference": "B12"
+  },
+  {
+    "team_name": "UCF",
+    "conference": "B12"
+  },
+  {
+    "team_name": "UCLA",
+    "conference": "B10"
+  },
+  {
+    "team_name": "USC",
+    "conference": "B10"
+  },
+  {
+    "team_name": "Utah",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Vanderbilt",
+    "conference": "SEC"
+  },
+  {
+    "team_name": "Virginia",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Virginia Tech",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Wake Forest",
+    "conference": "ACC"
+  },
+  {
+    "team_name": "Washington",
+    "conference": "B10"
+  },
+  {
+    "team_name": "West Virginia",
+    "conference": "B12"
+  },
+  {
+    "team_name": "Wisconsin",
+    "conference": "B10"
+  }
+]
