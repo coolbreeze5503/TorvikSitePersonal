@@ -27,6 +27,8 @@ jobs:
 
       - name: Run scraper (all P4 teams + players)
         working-directory: scraper
+        env:
+          PYTHONUNBUFFERED: "1"
         run: python scrape_all_p4.py
 
       - name: Install DB dependencies
