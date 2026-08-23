@@ -22,7 +22,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Torvik Site",
+  title: "CBB Stats Home",
   description: "Personal P4 college basketball stats, powered by Barttorvik data.",
 };
 
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <header className="border-b border-border">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <h1 className="font-display text-xl font-bold tracking-wide">
-              TORVIK<span className="text-accent">SITE</span>
+              CBB STATS <span className="text-accent">HOME</span>
             </h1>
           </div>
         </header>
