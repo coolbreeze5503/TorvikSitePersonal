@@ -2,6 +2,22 @@ import { supabase } from "@/lib/supabase";
 import { CURRENT_SEASON, TeamStatsRow } from "@/lib/types";
 import { PlayerRow } from "@/lib/player-types";
 
+export type GlossaryEntry = {
+  stat_key: string;
+  display_name: string;
+  description: string;
+};
+
+export async function getGlossary(): Promise<GlossaryEntry[]> {
+  const { data, error } = await supabase
+    .from("glossary")
+    .select("stat_key, display_name, description")
+    .order("stat_key");
+
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
 export async function getTeamStats(): Promise<TeamStatsRow[]> {
   const { data, error } = await supabase
     .from("team_stats")
