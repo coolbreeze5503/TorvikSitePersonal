@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { TeamStatsRow } from "@/lib/types";
 import { STAT_DIRECTION } from "@/lib/stat-config";
+import { STAT_ROWS } from "@/lib/stat-rows";
 
 type Column = {
   key: keyof TeamStatsRow;
@@ -13,18 +14,7 @@ type Column = {
 const COLUMNS: Column[] = [
   { key: "team_name", label: "Team" },
   { key: "conference", label: "Conf" },
-  { key: "barthag", label: "Barthag", decimals: 4 },
-  { key: "adj_o", label: "AdjO", decimals: 1 },
-  { key: "adj_d", label: "AdjD", decimals: 1 },
-  { key: "adj_t", label: "AdjT", decimals: 1 },
-  { key: "efg_o", label: "eFG% O", decimals: 1 },
-  { key: "efg_d", label: "eFG% D", decimals: 1 },
-  { key: "tov_o", label: "TOV% O", decimals: 1 },
-  { key: "tov_d", label: "TOV% D", decimals: 1 },
-  { key: "oreb_o", label: "OREB% O", decimals: 1 },
-  { key: "oreb_d", label: "OREB% D", decimals: 1 },
-  { key: "ftr_o", label: "FTR O", decimals: 1 },
-  { key: "ftr_d", label: "FTR D", decimals: 1 },
+  ...STAT_ROWS,
 ];
 
 function defaultDirection(key: keyof TeamStatsRow): "asc" | "desc" {
