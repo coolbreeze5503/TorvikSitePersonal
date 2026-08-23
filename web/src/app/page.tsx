@@ -6,7 +6,7 @@ export default async function TeamStatsPage() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-1">Team Stats</h2>
+      <h2 className="font-display text-lg font-semibold mb-1">Team Stats</h2>
       <p className="text-sm text-foreground/60 mb-4">
         All {teams.length} Power 4 teams. Click a column to sort.
       </p>

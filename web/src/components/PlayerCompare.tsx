@@ -7,13 +7,12 @@ import { PLAYER_STAT_DIRECTION } from "@/lib/player-stat-config";
 import { PLAYER_STAT_ROWS } from "@/lib/player-stat-rows";
 import PlayerSearchSelect from "@/components/PlayerSearchSelect";
 import OverlappingPieChartClient from "@/components/OverlappingPieChartClient";
+import Avatar from "@/components/Avatar";
 
 function PlayerBadge({ player }: { player: PlayerRow }) {
   return (
     <Link href={`/player/${player.player_id}`} className="flex items-center gap-2 font-semibold hover:text-accent">
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent-dim text-sm font-bold text-white shrink-0">
-        {player.full_name.charAt(0)}
-      </span>
+      <Avatar src={player.photo_url} fallbackText={player.full_name} size={32} />
       <span>
         {player.full_name}
         <span className="block text-xs font-normal text-foreground/50">
@@ -69,13 +68,13 @@ export default function PlayerCompare({ players }: { players: PlayerRow[] }) {
                   className="grid grid-cols-3 items-center px-4 py-2 border-b border-border/60 last:border-b-0"
                 >
                   <div
-                    className={`text-left ${aWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
+                    className={`text-left font-mono ${aWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
                   >
                     {av.toFixed(row.decimals)}
                   </div>
                   <div className="text-center text-xs text-foreground/50">{row.label}</div>
                   <div
-                    className={`text-right ${bWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
+                    className={`text-right font-mono ${bWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
                   >
                     {bv.toFixed(row.decimals)}
                   </div>

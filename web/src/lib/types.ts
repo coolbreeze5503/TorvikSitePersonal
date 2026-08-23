@@ -2,6 +2,7 @@ export type TeamStatsRow = {
   team_id: string;
   team_name: string;
   conference: string;
+  logo_url: string | null;
   barthag: number;
   adj_o: number;
   adj_d: number;

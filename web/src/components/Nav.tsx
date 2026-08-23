@@ -22,7 +22,7 @@ export default function Nav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
+              className={`font-display px-4 py-3 text-xs uppercase tracking-wider font-semibold border-b-2 transition-colors ${
                 active
                   ? "border-accent text-accent"
                   : "border-transparent text-foreground/70 hover:text-foreground"

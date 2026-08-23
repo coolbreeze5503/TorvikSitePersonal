@@ -22,7 +22,7 @@ export async function getTeamStats(): Promise<TeamStatsRow[]> {
   const { data, error } = await supabase
     .from("team_stats")
     .select(
-      "team_id, barthag, adj_o, adj_d, adj_t, efg_o, efg_d, tov_o, tov_d, oreb_o, oreb_d, ftr_o, ftr_d, teams(team_name, conference)",
+      "team_id, barthag, adj_o, adj_d, adj_t, efg_o, efg_d, tov_o, tov_d, oreb_o, oreb_d, ftr_o, ftr_d, teams(team_name, conference, logo_url)",
     )
     .eq("season", CURRENT_SEASON);
 
@@ -34,6 +34,7 @@ export async function getTeamStats(): Promise<TeamStatsRow[]> {
       team_id: row.team_id,
       team_name: team?.team_name ?? row.team_id,
       conference: team?.conference ?? "",
+      logo_url: team?.logo_url ?? null,
       barthag: row.barthag,
       adj_o: row.adj_o,
       adj_d: row.adj_d,

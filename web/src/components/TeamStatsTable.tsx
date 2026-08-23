@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { TeamStatsRow } from "@/lib/types";
 import { STAT_DIRECTION } from "@/lib/stat-config";
 import { STAT_ROWS } from "@/lib/stat-rows";
+import Avatar from "@/components/Avatar";
 
 type Column = {
   key: keyof TeamStatsRow;
@@ -88,12 +89,13 @@ export default function TeamStatsTable({ teams }: { teams: TeamStatsRow[] }) {
                     ? value.toFixed(col.decimals)
                     : value;
                 return (
-                  <td key={col.key} className="px-3 py-1.5">
+                  <td
+                    key={col.key}
+                    className={`px-3 py-1.5 ${col.decimals != null ? "font-mono" : ""}`}
+                  >
                     {col.key === "team_name" ? (
                       <span className="flex items-center gap-2">
-                        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-accent-dim text-[10px] font-bold text-white">
-                          {team.team_name.charAt(0)}
-                        </span>
+                        <Avatar src={team.logo_url} fallbackText={team.team_name} size={20} rounded="none" />
                         {team.team_name}
                       </span>
                     ) : (

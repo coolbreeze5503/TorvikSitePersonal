@@ -6,7 +6,7 @@ export default async function TeamComparePage() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-1">Team Compare</h2>
+      <h2 className="font-display text-lg font-semibold mb-1">Team Compare</h2>
       <p className="text-sm text-foreground/60 mb-4">
         Highlighted value is the better one for that stat.
       </p>

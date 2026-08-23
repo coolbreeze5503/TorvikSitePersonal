@@ -4,14 +4,13 @@ import { useState } from "react";
 import { TeamStatsRow } from "@/lib/types";
 import { STAT_DIRECTION } from "@/lib/stat-config";
 import { STAT_ROWS } from "@/lib/stat-rows";
+import Avatar from "@/components/Avatar";
 
 function TeamBadge({ team }: { team?: TeamStatsRow }) {
   if (!team) return <span className="text-foreground/40">Select a team</span>;
   return (
     <span className="flex items-center gap-2 font-semibold">
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent-dim text-sm font-bold text-white">
-        {team.team_name.charAt(0)}
-      </span>
+      <Avatar src={team.logo_url} fallbackText={team.team_name} size={32} rounded="none" />
       {team.team_name}
       <span className="text-xs font-normal text-foreground/50">{team.conference}</span>
     </span>
@@ -94,13 +93,13 @@ export default function TeamCompare({ teams }: { teams: TeamStatsRow[] }) {
                 className="grid grid-cols-3 items-center px-4 py-2 border-b border-border/60 last:border-b-0"
               >
                 <div
-                  className={`text-left ${aWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
+                  className={`text-left font-mono ${aWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
                 >
                   {av.toFixed(row.decimals)}
                 </div>
                 <div className="text-center text-xs text-foreground/50">{row.label}</div>
                 <div
-                  className={`text-right ${bWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
+                  className={`text-right font-mono ${bWins ? "bg-accent-dim/40 -mx-4 px-4 py-2 font-semibold" : ""}`}
                 >
                   {bv.toFixed(row.decimals)}
                 </div>

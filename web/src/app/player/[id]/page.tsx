@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getPlayerById } from "@/lib/data";
 import { PLAYER_STAT_ROWS } from "@/lib/player-stat-rows";
 import PlayerPieChartClient from "@/components/PlayerPieChartClient";
+import Avatar from "@/components/Avatar";
 
 export default async function PlayerProfilePage({
   params,
@@ -16,11 +17,9 @@ export default async function PlayerProfilePage({
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent-dim text-2xl font-bold text-white shrink-0">
-          {player.full_name.charAt(0)}
-        </span>
+        <Avatar src={player.photo_url} fallbackText={player.full_name} size={64} />
         <div>
-          <h2 className="text-2xl font-bold">{player.full_name}</h2>
+          <h2 className="font-display text-2xl font-bold">{player.full_name}</h2>
           <p className="text-sm text-foreground/60">
             {player.team_name} · {player.position ?? "—"} · {player.class_year ?? "—"}
           </p>
@@ -37,7 +36,7 @@ export default async function PlayerProfilePage({
               }`}
             >
               <span className="text-foreground/60 text-sm">{row.label}</span>
-              <span className="font-semibold">{player[row.key].toFixed(row.decimals)}</span>
+              <span className="font-mono font-semibold">{player[row.key].toFixed(row.decimals)}</span>
             </div>
           ))}
         </div>
