@@ -13,3 +13,7 @@ scraper/output/
 
 # OS
 .DS_Store
+
+# Local tooling
+.claude/
+supabase/.temp/
