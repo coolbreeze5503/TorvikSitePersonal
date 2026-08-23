@@ -1,0 +1,22 @@
+export type PlayerRow = {
+  player_id: string;
+  full_name: string;
+  team_id: string;
+  team_name: string;
+  position: string | null;
+  class_year: string | null;
+  photo_url: string | null;
+  minutes_pct: number;
+  ortg: number;
+  usg: number;
+  efg: number;
+  ts: number;
+  oreb_pct: number;
+  dreb_pct: number;
+  ast_pct: number;
+  tov_pct: number;
+  blk_pct: number;
+  stl_pct: number;
+  ftr: number;
+  pts_per_game: number;
+};
