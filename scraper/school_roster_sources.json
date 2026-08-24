@@ -1,0 +1,342 @@
+{
+  "alabama": {
+    "url": "https://rolltide.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "arizona": {
+    "url": "https://arizonawildcats.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "arizona-st": {
+    "url": "https://thesundevils.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "arkansas": {
+    "url": "https://arkansasrazorbacks.com/sport/m-baskbl/roster/",
+    "cms": "wmt",
+    "verified": true
+  },
+  "auburn": {
+    "url": "https://auburntigers.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "baylor": {
+    "url": "https://baylorbears.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "boston-college": {
+    "url": "https://bceagles.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "byu": {
+    "url": "https://byucougars.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "california": {
+    "url": "https://calbears.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "cincinnati": {
+    "url": "https://gobearcats.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "clemson": {
+    "url": "https://clemsontigers.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "colorado": {
+    "url": "https://cubuffs.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "duke": {
+    "url": "https://goduke.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "florida": {
+    "url": "https://floridagators.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "florida-st": {
+    "url": "https://seminoles.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "georgia": {
+    "url": "https://georgiadogs.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "georgia-tech": {
+    "url": "https://ramblinwreck.com/sports/m-baskbl/roster/",
+    "cms": "wmt",
+    "verified": true
+  },
+  "houston": {
+    "url": "https://uhcougars.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "illinois": {
+    "url": "https://fightingillini.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "indiana": {
+    "url": "https://iuhoosiers.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "iowa": {
+    "url": "https://hawkeyesports.com/sports/mbball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "iowa-st": {
+    "url": "https://cyclones.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "kansas": {
+    "url": "https://kuathletics.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "kansas-st": {
+    "url": "https://kstatesports.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "kentucky": {
+    "url": "https://ukathletics.com/sports/mbball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "louisville": {
+    "url": "https://gocards.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "lsu": {
+    "url": "https://lsusports.net/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "maryland": {
+    "url": "https://umterps.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "miami-fl": {
+    "url": "https://hurricanesports.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "michigan": {
+    "url": "https://mgoblue.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "michigan-st": {
+    "url": "https://msuspartans.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "minnesota": {
+    "url": "https://gophersports.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "mississippi": {
+    "url": "https://olemisssports.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "mississippi-st": {
+    "url": "https://hailstate.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "missouri": {
+    "url": "https://mutigers.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "n-c-state": {
+    "url": "https://gopack.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "nebraska": {
+    "url": "https://huskers.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "north-carolina": {
+    "url": "https://goheels.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "northwestern": {
+    "url": "https://nusports.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "notre-dame": {
+    "url": "https://und.com/sports/mbball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "ohio-st": {
+    "url": "https://ohiostatebuckeyes.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "oklahoma": {
+    "url": "https://soonersports.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "oklahoma-st": {
+    "url": "https://okstate.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "oregon": {
+    "url": "https://goducks.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "penn-st": {
+    "url": "https://gopsusports.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "pittsburgh": {
+    "url": "https://pittsburghpanthers.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "purdue": {
+    "url": "https://purduesports.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "rutgers": {
+    "url": "https://scarletknights.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "smu": {
+    "url": "https://smumustangs.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "south-carolina": {
+    "url": "https://gamecocksonline.com/sports/mbball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "stanford": {
+    "url": "https://gostanford.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "syracuse": {
+    "url": "https://cuse.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "tcu": {
+    "url": "https://gofrogs.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "tennessee": {
+    "url": "https://utsports.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "texas": {
+    "url": "https://texassports.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "texas-a-m": {
+    "url": "https://12thman.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "texas-tech": {
+    "url": "https://texastech.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "ucf": {
+    "url": "https://ucfknights.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "ucla": {
+    "url": "https://uclabruins.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "usc": {
+    "url": "https://usctrojans.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "utah": {
+    "url": "https://utahutes.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "vanderbilt": {
+    "url": "https://vucommodores.com/sports/mbball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "virginia": {
+    "url": "https://virginiasports.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "virginia-tech": {
+    "url": "https://hokiesports.com/sports/mens-basketball/roster",
+    "cms": "wmt",
+    "verified": true
+  },
+  "wake-forest": {
+    "url": "https://godeacs.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "washington": {
+    "url": "https://gohuskies.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "west-virginia": {
+    "url": "https://wvusports.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  },
+  "wisconsin": {
+    "url": "https://uwbadgers.com/sports/mens-basketball/roster",
+    "cms": "sidearm",
+    "verified": true
+  }
+}

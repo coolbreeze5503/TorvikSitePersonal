@@ -27,14 +27,17 @@ SELECT cron.schedule(
 );
 
 -- Weekly 2026-27 forecast refresh (supabase/functions/weekly-forecast).
--- Reduced scope vs. the manual scraper/build_forecast.py: ESPN's roster API
--- (the actual roster ground truth) 403s every cloud host tried -- both
--- Deno Deploy and Vercel, confirmed directly -- so this automated version
--- only uses Torvik's own signals (no ESPN): it correctly drops graduated
--- seniors and confirmed transfers-out each week, but can't discover a new
--- incoming transfer without ESPN. That half stays a manual
--- build_forecast.py run. User's call, asked directly, given the
--- alternative was a paid residential proxy service.
+-- Ground-truths each P4 team's roster against that school's own athletics
+-- site (not ESPN -- ESPN's roster API 403s every cloud host tried, both
+-- Deno Deploy and Vercel, confirmed directly; the schools' own sites are
+-- not blocked and were spot-checked to be more current than ESPN anyway).
+-- Handles both departures (graduated seniors, confirmed transfers-out) and
+-- arrivals (a transfer shows up on their new team as soon as that school
+-- posts its roster) automatically -- no manual step needed for either
+-- direction anymore. A school that hasn't published a 2026-27 roster page
+-- yet is simply left untouched that week rather than having its forecast
+-- wiped; scraper/build_forecast.py remains available for an on-demand
+-- manual run if you want one before the next Monday.
 SELECT cron.schedule(
     'weekly-forecast-refresh',
     '0 11 * * 1',  -- Monday 11:00 UTC = 6am EST / 7am EDT
