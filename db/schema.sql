@@ -35,7 +35,8 @@ CREATE TABLE team_stats (
 CREATE TABLE players (
   player_id TEXT PRIMARY KEY,     -- Torvik's internal numeric player id (stable across transfers)
   full_name TEXT NOT NULL,
-  team_id TEXT REFERENCES teams(team_id),
+  team_id TEXT REFERENCES teams(team_id),  -- team they actually played for in the CURRENT_SEASON (2025-26); fixed historical fact, do not overwrite for transfers
+  forecast_team_id TEXT REFERENCES teams(team_id),  -- team they're on for FORECAST_SEASON (2026-27), per ESPN's current roster; NULL if graduated/departed/unknown -- see scraper/build_forecast.py
   position TEXT,
   class_year TEXT,
   photo_url TEXT,

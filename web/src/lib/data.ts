@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { CURRENT_SEASON, TeamStatsRow } from "@/lib/types";
+import { CURRENT_SEASON, FORECAST_SEASON, TeamStatsRow } from "@/lib/types";
 import { PlayerRow } from "@/lib/player-types";
 
 export type GlossaryEntry = {
@@ -51,8 +51,19 @@ export async function getTeamStats(season: number = CURRENT_SEASON): Promise<Tea
   });
 }
 
+// players has two FKs to teams: team_id (who they actually played for in
+// CURRENT_SEASON, a fixed historical fact) and forecast_team_id (who
+// they're on for FORECAST_SEASON, per ESPN's current roster -- see
+// scraper/build_forecast.py). Both team relationships are selected and the
+// right one is picked in mapPlayerRow based on the requested season, since
+// a single players.team_id can't represent both at once.
 const PLAYER_SELECT =
-  "minutes_pct, ortg, usg, efg, ts, oreb_pct, dreb_pct, ast_pct, tov_pct, blk_pct, stl_pct, ftr, pts_per_game, players(player_id, full_name, position, class_year, photo_url, teams(team_id, team_name))";
+  "minutes_pct, ortg, usg, efg, ts, oreb_pct, dreb_pct, ast_pct, tov_pct, blk_pct, stl_pct, ftr, pts_per_game, " +
+  "players(player_id, full_name, position, class_year, photo_url, " +
+  "current_team:teams!players_team_id_fkey(team_id, team_name), " +
+  "forecast_team:teams!players_forecast_team_id_fkey(team_id, team_name))";
+
+type TeamRef = { team_id: string; team_name: string } | { team_id: string; team_name: string }[] | null;
 
 type PlayerStatsQueryRow = {
   minutes_pct: number;
@@ -75,7 +86,8 @@ type PlayerStatsQueryRow = {
         position: string | null;
         class_year: string | null;
         photo_url: string | null;
-        teams: { team_id: string; team_name: string } | { team_id: string; team_name: string }[] | null;
+        current_team: TeamRef;
+        forecast_team: TeamRef;
       }
     | {
         player_id: string;
@@ -83,21 +95,28 @@ type PlayerStatsQueryRow = {
         position: string | null;
         class_year: string | null;
         photo_url: string | null;
-        teams: { team_id: string; team_name: string } | { team_id: string; team_name: string }[] | null;
+        current_team: TeamRef;
+        forecast_team: TeamRef;
       }[]
     | null;
 };
 
-function mapPlayerRow(data: PlayerStatsQueryRow): PlayerRow | null {
+function mapPlayerRow(data: PlayerStatsQueryRow, season: number): PlayerRow | null {
   const player = Array.isArray(data.players) ? data.players[0] : data.players;
   if (!player) return null;
-  const team = Array.isArray(player.teams) ? player.teams[0] : player.teams;
+
+  const teamRef = season === FORECAST_SEASON ? player.forecast_team : player.current_team;
+  const team = Array.isArray(teamRef) ? teamRef[0] : teamRef;
+  // A player with no team for the requested season (departed/graduated,
+  // no forecast) has nothing meaningful to show -- treat as not found
+  // rather than rendering a blank team.
+  if (!team) return null;
 
   return {
     player_id: player.player_id,
     full_name: player.full_name,
-    team_id: team?.team_id ?? "",
-    team_name: team?.team_name ?? "",
+    team_id: team.team_id,
+    team_name: team.team_name,
     position: player.position,
     class_year: player.class_year,
     photo_url: player.photo_url,
@@ -126,23 +145,25 @@ export async function getPlayerById(
     .select(PLAYER_SELECT)
     .eq("season", season)
     .eq("player_id", playerId)
-    .maybeSingle();
+    .maybeSingle()
+    .returns<PlayerStatsQueryRow>();
 
   if (error) throw new Error(error.message);
   if (!data) return null;
 
-  return mapPlayerRow(data);
+  return mapPlayerRow(data, season);
 }
 
 export async function getAllPlayers(season: number = CURRENT_SEASON): Promise<PlayerRow[]> {
   const { data, error } = await supabase
     .from("player_stats")
     .select(PLAYER_SELECT)
-    .eq("season", season);
+    .eq("season", season)
+    .returns<PlayerStatsQueryRow[]>();
 
   if (error) throw new Error(error.message);
 
   return (data ?? [])
-    .map(mapPlayerRow)
+    .map((row) => mapPlayerRow(row, season))
     .filter((p): p is PlayerRow => p !== null);
 }
