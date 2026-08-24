@@ -18,13 +18,13 @@ export async function getGlossary(): Promise<GlossaryEntry[]> {
   return data ?? [];
 }
 
-export async function getTeamStats(): Promise<TeamStatsRow[]> {
+export async function getTeamStats(season: number = CURRENT_SEASON): Promise<TeamStatsRow[]> {
   const { data, error } = await supabase
     .from("team_stats")
     .select(
       "team_id, barthag, adj_o, adj_d, adj_t, efg_o, efg_d, tov_o, tov_d, oreb_o, oreb_d, ftr_o, ftr_d, teams(team_name, conference, logo_url)",
     )
-    .eq("season", CURRENT_SEASON);
+    .eq("season", season);
 
   if (error) throw new Error(error.message);
 
@@ -117,11 +117,14 @@ function mapPlayerRow(data: PlayerStatsQueryRow): PlayerRow | null {
   };
 }
 
-export async function getPlayerById(playerId: string): Promise<PlayerRow | null> {
+export async function getPlayerById(
+  playerId: string,
+  season: number = CURRENT_SEASON,
+): Promise<PlayerRow | null> {
   const { data, error } = await supabase
     .from("player_stats")
     .select(PLAYER_SELECT)
-    .eq("season", CURRENT_SEASON)
+    .eq("season", season)
     .eq("player_id", playerId)
     .maybeSingle();
 
@@ -131,11 +134,11 @@ export async function getPlayerById(playerId: string): Promise<PlayerRow | null>
   return mapPlayerRow(data);
 }
 
-export async function getAllPlayers(): Promise<PlayerRow[]> {
+export async function getAllPlayers(season: number = CURRENT_SEASON): Promise<PlayerRow[]> {
   const { data, error } = await supabase
     .from("player_stats")
     .select(PLAYER_SELECT)
-    .eq("season", CURRENT_SEASON);
+    .eq("season", season);
 
   if (error) throw new Error(error.message);
 

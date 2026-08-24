@@ -7,10 +7,15 @@ import { PLAYER_STAT_DIRECTION } from "@/lib/player-stat-config";
 import { PLAYER_STAT_ROWS } from "@/lib/player-stat-rows";
 import PlayerSearchSelect from "@/components/PlayerSearchSelect";
 import Avatar from "@/components/Avatar";
+import { CURRENT_SEASON } from "@/lib/types";
 
-function PlayerBadge({ player }: { player: PlayerRow }) {
+function PlayerBadge({ player, season }: { player: PlayerRow; season: number }) {
+  const href =
+    season === CURRENT_SEASON
+      ? `/player/${player.player_id}`
+      : `/player/${player.player_id}?season=${season}`;
   return (
-    <Link href={`/player/${player.player_id}`} className="flex items-center gap-2 font-semibold hover:text-accent">
+    <Link href={href} className="flex items-center gap-2 font-semibold hover:text-accent">
       <Avatar src={player.photo_url} fallbackText={player.full_name} size={32} />
       <span>
         {player.full_name}
@@ -22,7 +27,13 @@ function PlayerBadge({ player }: { player: PlayerRow }) {
   );
 }
 
-export default function PlayerCompare({ players }: { players: PlayerRow[] }) {
+export default function PlayerCompare({
+  players,
+  season = CURRENT_SEASON,
+}: {
+  players: PlayerRow[];
+  season?: number;
+}) {
   const [playerA, setPlayerA] = useState<PlayerRow | undefined>();
   const [playerB, setPlayerB] = useState<PlayerRow | undefined>();
 
@@ -37,12 +48,12 @@ export default function PlayerCompare({ players }: { players: PlayerRow[] }) {
       {playerA && playerB ? (
         <div className="border border-border rounded overflow-hidden">
           <div className="grid grid-cols-3 items-center px-4 py-3 bg-white/[.03] border-b border-border">
-            <PlayerBadge player={playerA} />
+            <PlayerBadge player={playerA} season={season} />
             <span className="text-center text-xs uppercase tracking-wide text-foreground/40">
               Stat
             </span>
             <div className="flex justify-end">
-              <PlayerBadge player={playerB} />
+              <PlayerBadge player={playerB} season={season} />
             </div>
           </div>
 

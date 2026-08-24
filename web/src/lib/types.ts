@@ -18,3 +18,8 @@ export type TeamStatsRow = {
 };
 
 export const CURRENT_SEASON = 2026;
+export const FORECAST_SEASON = 2027;
+
+export function parseSeason(value: string | undefined): number {
+  return value === String(FORECAST_SEASON) ? FORECAST_SEASON : CURRENT_SEASON;
+}

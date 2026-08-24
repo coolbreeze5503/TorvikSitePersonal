@@ -5,6 +5,7 @@ import Link from "next/link";
 import { TeamStatsRow } from "@/lib/types";
 import { PlayerRow } from "@/lib/player-types";
 import { PLAYER_STAT_ROWS, PlayerStatKey } from "@/lib/player-stat-rows";
+import { CURRENT_SEASON } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 
 type SortKey = "full_name" | PlayerStatKey;
@@ -12,9 +13,11 @@ type SortKey = "full_name" | PlayerStatKey;
 export default function TeamRoster({
   teams,
   players,
+  season = CURRENT_SEASON,
 }: {
   teams: TeamStatsRow[];
   players: PlayerRow[];
+  season?: number;
 }) {
   const sortedTeams = [...teams].sort((a, b) => a.team_name.localeCompare(b.team_name));
   const [teamId, setTeamId] = useState(sortedTeams[0]?.team_id ?? "");
@@ -113,7 +116,11 @@ export default function TeamRoster({
               >
                 <td className="px-3 py-1.5">
                   <Link
-                    href={`/player/${player.player_id}`}
+                    href={
+                      season === CURRENT_SEASON
+                        ? `/player/${player.player_id}`
+                        : `/player/${player.player_id}?season=${season}`
+                    }
                     className="flex items-center gap-2 font-semibold hover:text-accent"
                   >
                     <Avatar src={player.photo_url} fallbackText={player.full_name} size={20} />
