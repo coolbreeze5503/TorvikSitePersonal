@@ -15,6 +15,7 @@ export default function PlayerSearchSelect({
   label: string;
 }) {
   const [query, setQuery] = useState("");
+  const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
 
   const matches = useMemo(() => {
@@ -27,20 +28,32 @@ export default function PlayerSearchSelect({
       .slice(0, 20);
   }, [players, query]);
 
+  const displayValue = editing ? query : selected?.full_name ?? "";
+
   return (
     <div className="relative w-64">
       <input
         aria-label={label}
         type="text"
-        placeholder={selected ? selected.full_name : `Search ${label}...`}
-        value={query}
+        placeholder={`Search ${label}...`}
+        value={displayValue}
         onChange={(e) => {
           setQuery(e.target.value);
+          setEditing(true);
           setOpen(true);
         }}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 150)}
-        className="w-full bg-background border border-border rounded px-3 py-2 text-sm placeholder:text-foreground/40"
+        onFocus={() => {
+          setEditing(true);
+          setQuery("");
+          setOpen(true);
+        }}
+        onBlur={() =>
+          setTimeout(() => {
+            setEditing(false);
+            setOpen(false);
+          }, 150)
+        }
+        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground placeholder:text-foreground/40"
       />
       {open && matches.length > 0 && (
         <ul className="absolute z-10 mt-1 w-full max-h-64 overflow-y-auto bg-background border border-border rounded shadow-lg">
@@ -52,6 +65,7 @@ export default function PlayerSearchSelect({
                 onClick={() => {
                   onSelect(p);
                   setQuery("");
+                  setEditing(false);
                   setOpen(false);
                 }}
                 className="w-full text-left px-3 py-2 text-sm hover:bg-accent-dim/30 flex justify-between gap-2"

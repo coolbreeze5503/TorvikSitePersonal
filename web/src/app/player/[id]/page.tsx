@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPlayerById } from "@/lib/data";
 import { PLAYER_STAT_ROWS } from "@/lib/player-stat-rows";
-import PlayerPieChartClient from "@/components/PlayerPieChartClient";
 import Avatar from "@/components/Avatar";
 
 export default async function PlayerProfilePage({
@@ -26,24 +25,18 @@ export default async function PlayerProfilePage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="border border-border rounded overflow-hidden">
-          {PLAYER_STAT_ROWS.map((row, i) => (
-            <div
-              key={row.key}
-              className={`flex justify-between px-4 py-2 border-b border-border/60 last:border-b-0 ${
-                i % 2 === 1 ? "bg-white/[.015]" : ""
-              }`}
-            >
-              <span className="text-foreground/60 text-sm">{row.label}</span>
-              <span className="font-mono font-semibold">{player[row.key].toFixed(row.decimals)}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="border border-border rounded p-2">
-          <PlayerPieChartClient player={player} />
-        </div>
+      <div className="border border-border rounded overflow-hidden max-w-md">
+        {PLAYER_STAT_ROWS.map((row, i) => (
+          <div
+            key={row.key}
+            className={`flex justify-between px-4 py-2 border-b border-border/60 last:border-b-0 ${
+              i % 2 === 1 ? "bg-white/[.015]" : ""
+            }`}
+          >
+            <span className="text-foreground/60 text-sm">{row.label}</span>
+            <span className="font-mono font-semibold">{player[row.key].toFixed(row.decimals)}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
