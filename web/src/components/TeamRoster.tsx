@@ -125,6 +125,14 @@ export default function TeamRoster({
                   >
                     <Avatar src={player.photo_url} fallbackText={player.full_name} size={20} />
                     {player.full_name}
+                    {player.is_projected && (
+                      <span
+                        title="No prior college stats on record for this player (true freshman or international signee) -- these numbers are a rough estimate, not a real projection."
+                        className="text-[10px] font-normal px-1 py-0.5 rounded border border-accent-dim/60 text-accent/80 bg-accent-dim/10"
+                      >
+                        EST
+                      </span>
+                    )}
                   </Link>
                 </td>
                 <td className="px-3 py-1.5">{player.position ?? "—"}</td>

@@ -2,7 +2,7 @@ import { PlayerRow } from "@/lib/player-types";
 
 export type PlayerStatKey = Exclude<
   keyof PlayerRow,
-  "player_id" | "full_name" | "team_id" | "team_name" | "position" | "class_year" | "photo_url"
+  "player_id" | "full_name" | "team_id" | "team_name" | "position" | "class_year" | "photo_url" | "is_projected"
 >;
 
 export const PLAYER_STAT_ROWS: { key: PlayerStatKey; label: string; decimals: number }[] = [

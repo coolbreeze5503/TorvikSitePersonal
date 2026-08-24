@@ -37,16 +37,33 @@
 // slice of it -- so this falls back to that pool (getadvstats.php,
 // page=all) for any matched slug not already in our own players table, and
 // inserts them as a new row (team_id left null: we don't track their old,
-// non-P4 team, only where they're forecast to play now). A true freshman
-// or an international signee genuinely has no US college stats anywhere
-// yet, in our table or Torvik's D1 pool -- that gap is real and stays
-// unfixable short of a synthetic recruiting-based projection.
+// non-P4 team, only where they're forecast to play now).
+//
+// A true freshman or international signee has no US college stats
+// anywhere, in our table or Torvik's D1 pool -- there's no real data to
+// carry forward for them, full stop. What we do instead: assign them the
+// average SOURCE_SEASON stat line of real P4 players who share their class
+// year and (when we can tell it from the roster page) position bucket,
+// stored with is_projected=true so the site can label it as an estimate
+// rather than a real number. This is a v1 baseline only -- it can't tell a
+// five-star recruit from a walk-on. A recruiting-rank modifier (247/On3/
+// Rivals star rating) is the planned v2, once this baseline is confirmed
+// working.
 
 const POOL_PLAYER_FIELD_INDEX: Record<string, number> = {
   gp: 3, minutes_pct: 4, ortg: 5, usg: 6, efg: 7, ts: 8,
   oreb_pct: 9, dreb_pct: 10, ast_pct: 11, tov_pct: 12,
   ftm: 13, two_pm: 16, three_pm: 19, blk_pct: 22, stl_pct: 23,
   ftr: 24, class_year: 25, player_id: 32, position: 64,
+};
+
+// Buckets Torvik's finer position labels (as stored in our own players
+// table) down to G/F/C, the granularity a roster page's own text can
+// realistically be parsed back into for a projected player.
+const POSITION_BUCKET: Record<string, "G" | "F" | "C"> = {
+  "Wing G": "G", "Combo G": "G", "Scoring PG": "G", "Pure PG": "G",
+  "Wing F": "F", "Stretch 4": "F",
+  "C": "C", "PF/C": "C",
 };
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -80,6 +97,10 @@ function normalizeKey(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+function slugToDisplayName(slug: string): string {
+  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
 function looksLikeNameSlug(seg: string): boolean {
   if (!/^[a-z][a-z0-9]*(-[a-z0-9]+){1,5}$/.test(seg)) return false;
   if (EXCLUDE_SEGMENTS.has(seg)) return false;
@@ -88,9 +109,55 @@ function looksLikeNameSlug(seg: string): boolean {
   return true;
 }
 
-function extractSlugs(html: string): Set<string> {
-  const slugs = new Set<string>();
-  for (const match of html.matchAll(HREF_RE)) {
+interface SlugMeta {
+  classYear: string | null;
+  position: "G" | "F" | "C" | null;
+}
+
+const CLASS_YEAR_RE = /\b(Freshman|Sophomore|Junior|Senior|Graduate|Fr\.?|So\.?|Jr\.?|Sr\.?|Gr\.?)\b/;
+const POSITION_WORD_RE = /\b(Guard|Forward|Center)\b/i;
+const POSITION_ABBR_RE = />(G\/F|F\/C|G|F|C)</;
+
+function normalizeClassYear(raw: string): string | null {
+  const s = raw.toLowerCase();
+  if (s.startsWith("fr") || s === "freshman") return "Fr";
+  if (s.startsWith("so") || s === "sophomore") return "So";
+  if (s.startsWith("jr") || s === "junior") return "Jr";
+  if (s.startsWith("sr") || s === "senior") return "Sr";
+  if (s.startsWith("gr") || s === "graduate") return "Gr";
+  return null;
+}
+
+// Best-effort: look at the text right after a player's roster-page link for
+// a class year / position hint, so an unmatched (no-stats-anywhere) player
+// can still be bucketed for the projection baseline below. Template text
+// varies too much across 68 sites to do more than this -- when neither
+// pattern is found, the caller falls back to a coarser baseline tier.
+function extractMetaNear(html: string, matchIndex: number, nextMatchIndex: number): SlugMeta {
+  const window = html.slice(matchIndex, Math.min(nextMatchIndex, matchIndex + 600));
+  const cyMatch = window.match(CLASS_YEAR_RE);
+  const classYear = cyMatch ? normalizeClassYear(cyMatch[1]) : null;
+
+  let position: "G" | "F" | "C" | null = null;
+  const posWordMatch = window.match(POSITION_WORD_RE);
+  if (posWordMatch) {
+    const w = posWordMatch[1].toLowerCase();
+    position = w === "guard" ? "G" : w === "forward" ? "F" : "C";
+  } else {
+    const posAbbrMatch = window.match(POSITION_ABBR_RE);
+    if (posAbbrMatch) {
+      const a = posAbbrMatch[1];
+      position = a.includes("G") ? "G" : a.includes("C") ? "C" : "F";
+    }
+  }
+  return { classYear, position };
+}
+
+function extractSlugsWithMeta(html: string): Map<string, SlugMeta> {
+  const result = new Map<string, SlugMeta>();
+  const matches = [...html.matchAll(HREF_RE)];
+  for (let i = 0; i < matches.length; i++) {
+    const match = matches[i];
     let href = match[1].split("?")[0].split("#")[0];
     if (href.endsWith("/")) href = href.slice(0, -1);
     let parts = href.split("/").filter((p) => p.length > 0 && !p.startsWith("http"));
@@ -108,20 +175,23 @@ function extractSlugs(html: string): Set<string> {
       if (/^\d+$/.test(seg)) continue;
       if (/^\d{4}-\d{2}$/.test(seg)) continue;
       if (EXCLUDE_SEGMENTS.has(seg)) continue;
-      if (looksLikeNameSlug(seg)) slugs.add(seg);
+      if (looksLikeNameSlug(seg) && !result.has(seg)) {
+        const nextIndex = matches[i + 1]?.index ?? html.length;
+        result.set(seg, extractMetaNear(html, match.index!, nextIndex));
+      }
     }
   }
-  return slugs;
+  return result;
 }
 
-async function fetchRosterSlugs(url: string): Promise<Set<string>> {
+async function fetchRosterSlugs(url: string): Promise<Map<string, SlugMeta>> {
   try {
     const resp = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
-    if (resp.status !== 200) return new Set();
+    if (resp.status !== 200) return new Map();
     const html = await resp.text();
-    return extractSlugs(html);
+    return extractSlugsWithMeta(html);
   } catch {
-    return new Set();
+    return new Map();
   }
 }
 
@@ -131,6 +201,7 @@ interface ResolvedPlayer {
   position: string | null;
   class_year: string | null;
   stats: Record<string, unknown>;
+  isProjected?: boolean;
 }
 
 // Full D1 pool (all 365 schools), used only as a fallback for slugs that
@@ -172,6 +243,82 @@ async function fetchD1PoolByNormalizedName(): Promise<Map<string, ResolvedPlayer
   return byName;
 }
 
+interface ProjectionBaseline {
+  byPositionClass: Map<string, Record<string, number>>; // key: "G|Fr" etc, from real P4 players
+  byClass: Map<string, Record<string, number>>; // key: "Fr" etc, all positions pooled
+  overall: Record<string, number>;
+}
+
+const MIN_BASELINE_SAMPLES = 5;
+
+function averageStats(rows: Record<string, unknown>[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const f of PLAYER_STAT_FIELDS) {
+    const vals = rows.map((r) => Number(r[f])).filter((v) => Number.isFinite(v));
+    out[f] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+  }
+  return out;
+}
+
+// Builds the v1 projection baseline entirely from real P4 players already
+// loaded from our own DB -- no new data source. A player with no real
+// stats anywhere gets the average stat line of real players who share
+// their class year and (if the roster page's text gave us one) position
+// bucket, falling back to a class-year-only average when the position-
+// specific bucket is too thin to trust, and to the overall average when
+// even class year is unknown.
+function buildProjectionBaseline(
+  players: { position: string | null; class_year: string | null; player_stats: unknown }[],
+): ProjectionBaseline {
+  const byPositionClassRows = new Map<string, Record<string, unknown>[]>();
+  const byClassRows = new Map<string, Record<string, unknown>[]>();
+  const overallRows: Record<string, unknown>[] = [];
+
+  for (const p of players) {
+    const statsRows = Array.isArray(p.player_stats) ? p.player_stats : p.player_stats ? [p.player_stats] : [];
+    const stats = (statsRows as { season: number }[]).find((s) => s.season === SOURCE_SEASON);
+    if (!stats) continue;
+
+    overallRows.push(stats as Record<string, unknown>);
+    if (p.class_year) {
+      if (!byClassRows.has(p.class_year)) byClassRows.set(p.class_year, []);
+      byClassRows.get(p.class_year)!.push(stats as Record<string, unknown>);
+    }
+    const posBucket = p.position ? POSITION_BUCKET[p.position] : undefined;
+    if (posBucket && p.class_year) {
+      const key = `${posBucket}|${p.class_year}`;
+      if (!byPositionClassRows.has(key)) byPositionClassRows.set(key, []);
+      byPositionClassRows.get(key)!.push(stats as Record<string, unknown>);
+    }
+  }
+
+  const byPositionClass = new Map<string, Record<string, number>>();
+  for (const [key, rows] of byPositionClassRows) {
+    if (rows.length >= MIN_BASELINE_SAMPLES) byPositionClass.set(key, averageStats(rows));
+  }
+  const byClass = new Map<string, Record<string, number>>();
+  for (const [key, rows] of byClassRows) byClass.set(key, averageStats(rows));
+
+  return { byPositionClass, byClass, overall: averageStats(overallRows) };
+}
+
+function projectStats(
+  baseline: ProjectionBaseline,
+  classYear: string | null,
+  position: "G" | "F" | "C" | null,
+): Record<string, number> {
+  // Most genuinely-unmatched players are incoming true freshmen (the other
+  // realistic case, an international signee, also usually enters as
+  // first-year eligible) -- "Fr" is the safest default when the roster
+  // page's text didn't yield a class year.
+  const cy = classYear ?? "Fr";
+  if (position) {
+    const hit = baseline.byPositionClass.get(`${position}|${cy}`);
+    if (hit) return hit;
+  }
+  return baseline.byClass.get(cy) ?? baseline.overall;
+}
+
 Deno.serve(async (_req) => {
   try {
     return await run();
@@ -206,13 +353,19 @@ async function run(): Promise<Response> {
     if (!byNormalizedName.has(key)) byNormalizedName.set(key, p);
   }
 
+  const baseline = buildProjectionBaseline(allPlayers ?? []);
+  console.log(
+    `Projection baseline: ${baseline.byPositionClass.size} position+class buckets, ` +
+      `${baseline.byClass.size} class-year-only buckets`,
+  );
+
   console.log("Fetching Torvik's full D1 pool as a fallback for non-P4 transfers...");
   const poolPromise = fetchD1PoolByNormalizedName();
 
   console.log(`Scraping ${Object.keys(ROSTER_URLS).length} team roster pages...`);
   const teamIds = Object.keys(ROSTER_URLS) as (keyof typeof ROSTER_URLS)[];
   const BATCH_SIZE = 10;
-  const slugsByTeam = new Map<string, Set<string>>();
+  const slugsByTeam = new Map<string, Map<string, SlugMeta>>();
   for (let i = 0; i < teamIds.length; i += BATCH_SIZE) {
     const batch = teamIds.slice(i, i + BATCH_SIZE);
     const results = await Promise.all(
@@ -231,35 +384,68 @@ async function run(): Promise<Response> {
   const poolByNormalizedName = await poolPromise;
   console.log(`D1 pool fallback: ${poolByNormalizedName.size} players available`);
 
+  function hasSourceSeasonStats(playerStats: unknown): boolean {
+    const rows = Array.isArray(playerStats) ? playerStats : playerStats ? [playerStats] : [];
+    return (rows as { season: number }[]).some((s) => s.season === SOURCE_SEASON);
+  }
+
   // New forecast_team_id assignment, built only from successfully-scraped teams.
   const newAssignment = new Map<string, string>(); // player_id -> team_id
-  const poolMatches = new Map<string, ResolvedPlayer>(); // player_id -> pool data, for slugs not in our own DB
+  // player_id -> pool/projection data, for anyone whose stats for this run
+  // aren't a plain "already had real SOURCE_SEASON stats in our DB" case --
+  // covers both real D1-pool transfers and projected freshmen/internationals,
+  // including a *previously* projected player who's now found by name in our
+  // own DB (their own upsert from an earlier run) but still has no real
+  // SOURCE_SEASON stats to show for it -- they need a fresh projection again,
+  // not to be silently dropped by a stats lookup that will never succeed.
+  const poolMatches = new Map<string, ResolvedPlayer>();
   let matchedFromDb = 0;
   let matchedFromPool = 0;
-  let unmatched = 0;
+  let matchedFromProjection = 0;
   for (const [teamId, slugs] of slugsByTeam) {
     if (!successfulTeams.has(teamId)) continue;
-    for (const slug of slugs) {
+    for (const [slug, meta] of slugs) {
       const key = normalizeKey(slug);
       const dbPlayer = byNormalizedName.get(key);
-      if (dbPlayer) {
+      if (dbPlayer && hasSourceSeasonStats(dbPlayer.player_stats)) {
         newAssignment.set(dbPlayer.player_id, teamId);
         matchedFromDb++;
         continue;
       }
       const poolPlayer = poolByNormalizedName.get(key);
       if (poolPlayer) {
-        newAssignment.set(poolPlayer.player_id, teamId);
-        poolMatches.set(poolPlayer.player_id, poolPlayer);
+        // Prefer the dbPlayer's own id when one already exists (e.g. a
+        // former projection placeholder now discoverable in the full D1
+        // pool) so this doesn't create a second row for the same person.
+        const id = dbPlayer?.player_id ?? poolPlayer.player_id;
+        newAssignment.set(id, teamId);
+        poolMatches.set(id, { ...poolPlayer, player_id: id });
         matchedFromPool++;
-      } else {
-        unmatched++;
+        continue;
       }
+      // No real stats anywhere -- true freshman or international signee.
+      // Reuse the existing dbPlayer id if this same person was already
+      // projected in an earlier run, otherwise mint a stable synthetic one
+      // (scoped by team so the same slug on two different rosters can't
+      // collide).
+      const projectedId = dbPlayer?.player_id ?? `proj-${teamId}-${slug}`;
+      const classYear = meta.classYear ?? dbPlayer?.class_year ?? null;
+      const posBucket = meta.position ?? (dbPlayer?.position ? POSITION_BUCKET[dbPlayer.position] ?? null : null);
+      newAssignment.set(projectedId, teamId);
+      poolMatches.set(projectedId, {
+        player_id: projectedId,
+        full_name: dbPlayer?.full_name ?? slugToDisplayName(slug),
+        position: dbPlayer?.position ?? posBucket,
+        class_year: classYear,
+        stats: projectStats(baseline, classYear, posBucket),
+        isProjected: true,
+      });
+      matchedFromProjection++;
     }
   }
   console.log(
     `Matched ${matchedFromDb} slugs from our own DB, ${matchedFromPool} from Torvik's full D1 pool (non-P4 transfers), ` +
-      `${unmatched} unmatched (likely freshmen/international with no prior college stats)`,
+      `${matchedFromProjection} from the projection baseline (no real stats anywhere -- freshman/international)`,
   );
 
   // Players currently forecast onto a successfully-scraped team but not
@@ -304,7 +490,15 @@ async function run(): Promise<Response> {
     let class_year: string | null;
     let stats: Record<string, unknown> | undefined;
 
-    if (dbPlayer) {
+    // poolPlayer (real D1-pool transfer stats, or a fresh projection) takes
+    // priority: it's only ever set when the matching loop above decided
+    // dbPlayer's own SOURCE_SEASON stats (if any) can't be used this run.
+    if (poolPlayer) {
+      full_name = poolPlayer.full_name;
+      position = poolPlayer.position;
+      class_year = poolPlayer.class_year;
+      stats = poolPlayer.stats;
+    } else if (dbPlayer) {
       full_name = dbPlayer.full_name;
       position = dbPlayer.position;
       class_year = dbPlayer.class_year;
@@ -314,11 +508,6 @@ async function run(): Promise<Response> {
         ? [dbPlayer.player_stats]
         : [];
       stats = statsRows.find((s: { season: number }) => s.season === SOURCE_SEASON);
-    } else if (poolPlayer) {
-      full_name = poolPlayer.full_name;
-      position = poolPlayer.position;
-      class_year = poolPlayer.class_year;
-      stats = poolPlayer.stats;
     } else {
       continue;
     }
@@ -339,6 +528,7 @@ async function run(): Promise<Response> {
       player_id: playerId,
       season: FORECAST_SEASON,
       ...Object.fromEntries(PLAYER_STAT_FIELDS.map((f) => [f, (stats as Record<string, unknown>)[f]])),
+      is_projected: poolPlayer?.isProjected ?? false,
       updated_at: new Date().toISOString(),
     };
     playerStatsRows.push(statsRow);
@@ -374,12 +564,12 @@ async function run(): Promise<Response> {
 
     const row: Record<string, unknown> = { team_id: teamId, season: FORECAST_SEASON };
     for (const [teamField, playerField] of Object.entries(TEAM_TO_PLAYER_FIELD)) {
-      const baseline = Number(lastYear[teamField]);
+      const lastYearValue = Number(lastYear[teamField]);
       const weighted =
         roster.length && totalMinutes > 0
           ? roster.reduce((sum, r) => sum + (Number(r.minutes_pct) || 0) * Number(r[playerField] || 0), 0) / totalMinutes
-          : baseline;
-      row[teamField] = coverage * weighted + (1 - coverage) * baseline;
+          : lastYearValue;
+      row[teamField] = coverage * weighted + (1 - coverage) * lastYearValue;
     }
     for (const field of CARRY_FORWARD_TEAM_FIELDS) {
       row[field] = Number(lastYear[field]);
@@ -405,7 +595,7 @@ async function run(): Promise<Response> {
         teamsWithoutData: failedTeams,
         slugsMatchedFromDb: matchedFromDb,
         slugsMatchedFromPool: matchedFromPool,
-        slugsUnmatched: unmatched,
+        slugsMatchedFromProjection: matchedFromProjection,
         playersCleared: clearedPlayerIds.length,
         playersForecast: playerRows.length,
         teamsProjected: teamRows.length,

@@ -19,4 +19,5 @@ export type PlayerRow = {
   stl_pct: number;
   ftr: number;
   pts_per_game: number;
+  is_projected: boolean;
 };

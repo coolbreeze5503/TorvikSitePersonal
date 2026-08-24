@@ -58,7 +58,7 @@ export async function getTeamStats(season: number = CURRENT_SEASON): Promise<Tea
 // right one is picked in mapPlayerRow based on the requested season, since
 // a single players.team_id can't represent both at once.
 const PLAYER_SELECT =
-  "minutes_pct, ortg, usg, efg, ts, oreb_pct, dreb_pct, ast_pct, tov_pct, blk_pct, stl_pct, ftr, pts_per_game, " +
+  "minutes_pct, ortg, usg, efg, ts, oreb_pct, dreb_pct, ast_pct, tov_pct, blk_pct, stl_pct, ftr, pts_per_game, is_projected, " +
   "players(player_id, full_name, position, class_year, photo_url, " +
   "current_team:teams!players_team_id_fkey(team_id, team_name), " +
   "forecast_team:teams!players_forecast_team_id_fkey(team_id, team_name))";
@@ -79,6 +79,7 @@ type PlayerStatsQueryRow = {
   stl_pct: number;
   ftr: number;
   pts_per_game: number;
+  is_projected: boolean;
   players:
     | {
         player_id: string;
@@ -133,6 +134,7 @@ function mapPlayerRow(data: PlayerStatsQueryRow, season: number): PlayerRow | nu
     stl_pct: data.stl_pct,
     ftr: data.ftr,
     pts_per_game: data.pts_per_game,
+    is_projected: data.is_projected,
   };
 }
 

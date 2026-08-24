@@ -61,6 +61,7 @@ CREATE TABLE player_stats (
   stl_pct NUMERIC,
   ftr NUMERIC,
   pts_per_game NUMERIC,
+  is_projected BOOLEAN NOT NULL DEFAULT false,  -- true for a FORECAST_SEASON row with no real prior-season stats to carry forward (true freshman / international signee) -- see supabase/functions/weekly-forecast
   updated_at TIMESTAMP DEFAULT now(),
   UNIQUE(player_id, season)
 );

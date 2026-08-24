@@ -7,7 +7,12 @@ export default function ForecastNotice() {
       transferred, declared for the draft) are excluded and incoming transfers show up on their
       new team once that school posts its roster. A transfer neither school has posted yet is
       left off entirely rather than shown under the wrong team. Team defensive stats and tempo
-      assume similar efficiency to last season.
+      assume similar efficiency to last season. A player with no prior college stats anywhere
+      (true freshman or international signee, marked{" "}
+      <span className="px-1 py-0.5 rounded border border-accent-dim/60 text-accent/80 bg-accent-dim/10">
+        EST
+      </span>
+      ) gets a rough estimate based on similar players&apos; stats rather than a real projection.
     </div>
   );
 }

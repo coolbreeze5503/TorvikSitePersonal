@@ -52,7 +52,17 @@ export default async function PlayerProfilePage({
         <div className="flex items-center gap-4">
           <Avatar src={player.photo_url} fallbackText={player.full_name} size={64} />
           <div>
-            <h2 className="font-display text-2xl font-bold">{player.full_name}</h2>
+            <h2 className="font-display text-2xl font-bold flex items-center gap-2">
+              {player.full_name}
+              {player.is_projected && (
+                <span
+                  title="No prior college stats on record for this player (true freshman or international signee) -- these numbers are a rough estimate, not a real projection."
+                  className="text-[10px] font-normal px-1.5 py-0.5 rounded border border-accent-dim/60 text-accent/80 bg-accent-dim/10"
+                >
+                  ESTIMATED
+                </span>
+              )}
+            </h2>
             <p className="text-sm text-foreground/60">
               {player.team_name} · {player.position ?? "—"} · {player.class_year ?? "—"}
             </p>
