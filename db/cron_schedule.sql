@@ -26,8 +26,30 @@ SELECT cron.schedule(
     $$
 );
 
+-- Weekly 2026-27 forecast refresh (supabase/functions/weekly-forecast).
+-- Reduced scope vs. the manual scraper/build_forecast.py: ESPN's roster API
+-- (the actual roster ground truth) 403s every cloud host tried -- both
+-- Deno Deploy and Vercel, confirmed directly -- so this automated version
+-- only uses Torvik's own signals (no ESPN): it correctly drops graduated
+-- seniors and confirmed transfers-out each week, but can't discover a new
+-- incoming transfer without ESPN. That half stays a manual
+-- build_forecast.py run. User's call, asked directly, given the
+-- alternative was a paid residential proxy service.
+SELECT cron.schedule(
+    'weekly-forecast-refresh',
+    '0 11 * * 1',  -- Monday 11:00 UTC = 6am EST / 7am EDT
+    $$
+    SELECT net.http_post(
+        url := 'https://oxjutqoulpbwhbksxjpw.supabase.co/functions/v1/weekly-forecast',
+        headers := '{"Content-Type": "application/json"}'::jsonb,
+        timeout_milliseconds := 60000
+    );
+    $$
+);
+
 -- To check recent run history:
 -- SELECT * FROM cron.job_run_details ORDER BY start_time DESC LIMIT 10;
 
 -- To unschedule:
 -- SELECT cron.unschedule('daily-torvik-scrape');
+-- SELECT cron.unschedule('weekly-forecast-refresh');
