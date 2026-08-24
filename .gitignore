@@ -17,3 +17,4 @@ scraper/output/
 # Local tooling
 .claude/
 **/supabase/.temp/
+/.vercel/
